@@ -1,26 +1,20 @@
 <script>
 	import '../app.css';
+	import { A } from 'flowbite-svelte';
 </script>
 
-<header>
-	<h1 class="text-3xl text-center font-bold text-slate-500 mb-10">
-		Welcome to your Svelte/SvelteKit Playground.
-	</h1>
-	<h2 class="text-center">This is a place to practice and try everything Svelte related.</h2>
-</header>
-
-<main class="mt-10 ml-5">
+<main>
 	<div>
-		<p>Links</p>
+		<h1>Links</h1>
 	</div>
 	<ul>
-		<li class="link"><a href="/weather">Check out the weather</a></li>
+		<li><A href="/weather" class="font-medium hover:underline">Check out the weather</A></li>
+		<li>
+			<A href="/authentication" class="font-medium hover:underline">Go to authentication page</A>
+		</li>
+		<li><A href="/todo" class="font-medium hover:underline">Your To Do list</A></li>
 	</ul>
 </main>
 
 <style>
-	.link {
-		color: blue;
-		text-decoration: underline;
-	}
 </style>

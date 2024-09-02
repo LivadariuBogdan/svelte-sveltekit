@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { Select, Card, Radio } from 'flowbite-svelte';
 	import { europeanCountries } from '../../models/EuropeanCapitals';
 	import type { WeatherApiResponse } from '../../models/WeatherApiResponse';
 	import '../../app.css';
@@ -8,6 +8,11 @@
 	let loading = false;
 	let units = 'metric';
 	let selectedCountry: number[] = [];
+
+	const selectOptions = europeanCountries.map((country) => ({
+		name: country.country,
+		value: country.coordinates // or any other unique identifier from your EuropeanCountries objects
+	}));
 
 	$: console.log(selectedCountry);
 
@@ -27,39 +32,46 @@
 	}
 </script>
 
-<div>
-	<a class="underline text-yellow-800" href="/">Go home</a>
-	<h2 class="text-blue-300">Please pick a country:</h2>
-	<select bind:value={selectedCountry}>
-		<option value="Choose a country">Choose a country</option>
-		{#each europeanCountries as country (country)}
-			<option value={country.coordinates}>{country.country}</option>
-		{/each}
-	</select>
+<div class="flex flex-col">
+	<div>
+		<h2 class="text-blue-700">Please pick a country:</h2>
+		<Select class="my-2 w-fit" items={selectOptions} bind:value={selectedCountry} />
+	</div>
+	<div>
+		<div class="flex flex-row">
+			<Radio bind:group={units} value="metric">Metric (°C)</Radio>
+			<Radio bind:group={units} value="imperial">Imperial (°F)</Radio>
+		</div>
+	</div>
 </div>
 
 <div>
-	{#if loading}
-		<p>Loading</p>
-	{/if}
 	{#if selectedCountry.length > 0}
-		<div>
-			<label>
-				<input type="radio" bind:group={units} value="metric" /> Metric (°C)
-			</label>
-			<label>
-				<input type="radio" bind:group={units} value="imperial" /> Imperial (°F)
-			</label>
-		</div>
-		<h2 class="text-blue-500">
-			Weather in {europeanCountries.find((country) => country.coordinates === selectedCountry)
-				?.country}
-		</h2>
 		{#if weatherData}
-			<p>Temperature: {weatherData.main?.temp}</p>
-			<p>Feels like: {weatherData.main?.feels_like}</p>
-			<p>Humidity: {weatherData.main?.humidity}</p>
-			<p>Pressure: {weatherData.main?.pressure}</p>
+			<Card>
+				{#if loading}
+					<p>Loading</p>
+				{:else}
+					<h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+						Weather in <strong
+							>{europeanCountries.find((country) => country.coordinates === selectedCountry)
+								?.country}</strong
+						>
+					</h2>
+					<p class="font-normal text-gray-700 dark:text-gray-400 leading-tight">
+						Temperature: {Math.round(weatherData.main?.temp)}
+					</p>
+					<p class="font-normal text-gray-700 dark:text-gray-400 leading-tight">
+						Feels like: {Math.round(weatherData.main?.feels_like)}
+					</p>
+					<p class="font-normal text-gray-700 dark:text-gray-400 leading-tight">
+						Humidity: {weatherData.main?.humidity}
+					</p>
+					<p class="font-normal text-gray-700 dark:text-gray-400 leading-tight">
+						Pressure: {weatherData.main?.pressure}
+					</p>
+				{/if}
+			</Card>
 		{/if}
 	{/if}
 </div>
